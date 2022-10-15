@@ -7,12 +7,79 @@
     <title>myFlix</title>
 </head>
 <body>
+  <h2>Documentation</h2>
+  <details>
+
+    <p>1) list of all features <br></p>
+    <p>1) table content for endpoints and info about functionality</p>
+  </details>
   <ul>
-    <li>Home Page : url "/"</li>
-    <li>get all listed Movies : url "/movies" </li>
-    <li>get specific movie by title : url "/:title"</li>
-    <li>get specific movie by genre : url "/movies/:genre"</li>
-    
+<li>Return a list of ALL movies to the user;</li>
+<li>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user;</li>
+<li>Return data by a genre;</li>
+<li>Return data by a  director;</li>
+<li>Allow new users to register;</li>
+<li>Allow users to update their user info (username);</li>
+<li>Allow users to add a movie to their list of favorites </li>
+<li>Allow users to remove a movie from their list of favorites </li>
+<li>Allow existing users to deregister </li>
   </ul>
+  <table class="styled-table">
+    <thead>
+        <tr>
+            <th>Feature</th>
+            <th>HTTP Method</th>
+            <th>Description/Url</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr class="active-row">
+            <td>return movies</td>
+            <td>GET</td>
+            <td>/movies : return a list of movies.</td>
+            </tr>
+        <tr class="active-row">
+          <td>return movie by name</td>
+          <td>GET</td>
+            <td>/movies/"title": return data by movie title.</td>
+        </tr>
+        <tr class="active-row">
+          <td>return movies by genre</td>
+          <td>GET</td>
+          <td>/movies/genre/"genre name": return movies by genre.</td>
+        </tr>
+        <tr class="active-row">
+          <td>return movies by director</td>
+          <td>GET</td>
+          <td>/movies/directed/"director name": return movies by director name.</td>
+        </tr>
+        <tr class="active-row">
+          <td>register new user</td>
+          <td>POST</td>
+          <td>/users :allow new users to register by writing name in the request body form.</td>
+        </tr>
+        <tr class="active-row">
+          <td>update user name</td>
+          <td>PUT</td>
+          <td>/users/"active name" : allow user to change name by requiring new name in the request body form.</td>
+        </tr>
+        
+        <tr class="active-row">
+          <td>add favorite movie</td>
+          <td>PUT</td>
+          <td>/users/"active name"/favorite : allow user to add favorite movies.</td>
+        </tr>
+        <tr class="active-row">
+          <td>remove favorite movie</td>
+          <td>DELETE</td>
+          <td>/users/"active name"/favorite/deleteFavorite : allow user to delete movie from favorite.</td>
+        </tr>
+        <tr class="active-row">
+          <td>deregister user</td>
+          <td>DELETE</td>
+          <td>/users/"active name"/deregister :allow user to deregister.</td>
+        </tr>
+    </tbody>
+</table>
 </body>
 </html>

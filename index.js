@@ -4,14 +4,15 @@ const app = express();
 const bodyParser = require('body-parser'),
     uuid = require("uuid");
 const { toString } = require("lodash");
+const { json } = require("body-parser");
 methodOverride = require('method-override');
 app.use(bodyParser.json());
 app.use(morgan("common"));
 let users = [
     {
+        name: "Marco",
         id: 1,
-        name: "dummyName",
-        favorite: []
+        favorite: ["the day after tomorrow",]
 
     }
 ]
@@ -90,7 +91,7 @@ let movieSelection = [
     },]
 //Home page
 app.get("/", (req, res) => {
-    res.send("Home Page");
+    res.send("Please visit URL//public/documentation.html");
 });
 // return list of movies
 app.get("/movies", (req, res) => {
@@ -100,43 +101,74 @@ app.get("/movies", (req, res) => {
 app.get('/movies/:title', (req, res) => {
     res.send(movieSelection.find((movie) => { return movie.title === req.params.title }));
 });
-//i tried to tinker with filter but it doesnt work , 
-app.get("/movies/:genre", (req, res) => {
-    genreView = req.params.genre
-    res.send(movieSelection.filter(genreView))
+// return data by genre
+app.get("/movies/genre/:genre", (req, res) => {
+    let genreView = req.params.genre;
+    res.send(movieSelection.filter((movie) => movie.genre === genreView))
 })
-app.get("/movies/:directed", (req, res) => {
-    res.send(movieSelection.find((movie) => {
-        genreView = req.params.genre
-        res.json(genreView)
-    }))
-})
+//return data by director
+app.get("/movies/directed/:directed", (req, res) => {
+    const director = req.params.directed
+    res.send(movieSelection.filter((movie) => movie.directed === director))
+}
+)
+// create new user
 app.post('/users', (req, res) => {
-    let newUser = req.body;
-
-    if (!newUser.name) {
-        const message = 'Missing name in request body';
-        res.status(400).send(message);
-    } else {
-        newUser.id = uuid.v4();
-        users.push(newUser);
-        res.status(201).send(newUser);
+    let newUser = {
+        id: uuid.v4(),
+        name: req.body,
+        favorite: []
     }
-});
+    if (!newUser.name) { return res.status(400).send("missing Name"); }
+    users.push(newUser);
+    res.status(200).json(newUser);
+})
+//change name
 app.put("/users/:name", (req, res) => {
     let user = users.find((user) => { return user.name === req.params.name });
-    if (!user) {
+    if (!user.name) {
         const message = 'Missing name in request body';
         res.status(400).send(message);
     }
     else {
+        const newUsername = req.body;
         user.name = newUsername
         res.status(201).send(newUsername);
     }
 })
+//add favorite
+app.put('/users/:name/favorite/', (req, res) => {
+    let user = users.find((user) => { return user.name === req.params.name });
+    if (user) {
+        imputMovie = req.body
+        res.status(201).send(req.params.name + " has added as is new favorite Movie " + imputMovie)
+    } else {
+        res.status(404).send('User ' + req.params.name + ' was not found.');
+    }
+});
+app.delete("/users/:name/favorite/deleteFavorite", (req, res) => {
+    let user = users.find((user) => { return user.name === req.params.name });
+    if (user) {
+        deleteMovie = req.body
+        res.status(201).send(req.params.name + " has deleted " + imputMovie + " from his list")
+    } else {
+        res.status(404).send('User ' + req.params.name + ' was not found.');
+    }
+
+})
+// delete account
+app.delete("/users/:name/deregister", (req, res) => {
+    let user = users.find((user) => { return user.name === req.params.name });
+    if (user) {
+        res.status(201).send(req.params.name + " deleted his account ")
+    } else {
+        res.status(404).send('User ' + req.params.name + ' was not found.');
+    }
+
+})
 
 app.get('/documentation', (req, res) => {
-    res.sendFile('public/documentation.html', { root: __dirnamenod });
+    res.sendFile('public/documentation.html', { root: __dirname });
 });
 
 app.use(express.static('public'));
