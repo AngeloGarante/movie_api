@@ -13,31 +13,34 @@ const { json } = require("body-parser");
 methodOverride = require('method-override');
 app.use(bodyParser.json());
 app.use(morgan("common"));
-
+let auth = require('./auth')(app);
+const passport = require('passport');
+require('./passport');
+let transAuth = passport.authenticate('jwt', { session: false });
 //Home page
 app.get("/", (req, res) => {
     res.send("Please visit URL//public/documentation.html");
 });
 // return list of movies
-app.get("/movies", (req, res) => {
+app.get("/movies", transAuth, (req, res) => {
     Movies.find().then((movies) => res.status(201).json(movies)).catch((err) => { console.error(err); res.status(500).send("Error " + err) })
 });
 // return data by title
-app.get('/movies/:title', (req, res) => {
+app.get('/movies/:title', transAuth, (req, res) => {
     Movies.findOne({ Title: req.params.title }).then((movie) => res.status(200).json(movie)).catch((err) => {
         console.error(err);
         res.status(500).send("Error " + err)
     })
 });
 // return data by genre
-app.get("/movies/genre/:genre", (req, res) => {
+app.get("/movies/genre/:genre", transAuth, (req, res) => {
     Movies.find({ "Genre.Name": req.params.genre }).then((movie) => res.status(200).json(movie)).catch((err) => {
         console.error(err);
         res.status(500).send("Error " + err)
     })
 })
 //return data by director
-app.get("/movies/directed/:directed", (req, res) => {
+app.get("/movies/directed/:directed", transAuth, (req, res) => {
     Movies.find({ "Director.Name": req.params.directed }).then((movie) => res.status(200).json(movie)).catch((err) => {
         console.error(err);
         res.status(500).send("Error " + err)
@@ -71,7 +74,7 @@ app.post('/users', (req, res) => {
         });
 });
 //update user
-app.put("/users/:Username", (req, res) => {
+app.put("/users/:Username", transAuth, (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $set:
         {
@@ -93,7 +96,7 @@ app.put("/users/:Username", (req, res) => {
 });
 
 //add favorite
-app.put('/users/:Username/favorite/:MovieID', (req, res) => {
+app.put('/users/:Username/favorite/:MovieID', transAuth, (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $push: { FavoriteMovies: req.params.MovieID }
     },
@@ -108,7 +111,7 @@ app.put('/users/:Username/favorite/:MovieID', (req, res) => {
         });
 });
 //remove favorite
-app.delete('/users/:Username/favorite/:MovieID', (req, res) => {
+app.delete('/users/:Username/favorite/:MovieID', transAuth, (req, res) => {
     Users.findOneAndUpdate({ Username: req.params.Username }, {
         $pull: { FavoriteMovies: req.params.MovieID }
     },
@@ -123,7 +126,7 @@ app.delete('/users/:Username/favorite/:MovieID', (req, res) => {
         });
 });
 // delete account
-app.delete("/users/:Username/deregister", (req, res) => {
+app.delete("/users/:Username/deregister", transAuth, (req, res) => {
     Users.findOneAndRemove({ Username: req.params.Username })
         .then((user) => {
             if (!user) {
