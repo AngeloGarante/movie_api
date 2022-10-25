@@ -13,10 +13,26 @@ const { json } = require("body-parser");
 methodOverride = require('method-override');
 app.use(bodyParser.json());
 app.use(morgan("common"));
+const cors = require("cors");
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
 let transAuth = passport.authenticate('jwt', { session: false });
+const bcrypt = require("bcrypt");
+const { check, validationResult } = require('express-validator');
+//allowed Origins
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+const port = process.env.PORT || 8080;
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            let message = "The CORS policy for this application doesn't allow access from the origin " + origin;
+            return callback(new Error(message), false);
+        }
+        return callback(null, true);
+    }
+}));
 //Home page
 app.get("/", (req, res) => {
     res.send("Please visit URL//public/documentation.html");
@@ -48,16 +64,26 @@ app.get("/movies/directed/:directed", transAuth, (req, res) => {
 }
 )
 // create new user
-app.post('/users', (req, res) => {
+app.post('/users', [
+    check("Username", "Username is required").isLength({ min: 5 }),
+    check("Username", "Username contains non alphanumeric characters - is not allowed").isAlphanumeric(),
+    check("Password", "Password is required").not().isEmpty(),
+    check("Email", "Email is not valid").isEmail()
+], (req, res) => {
+    let errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+    let hashedPassword = Users.hashPassword(req.body.Password);
     Users.findOne({ Username: req.body.Username })
         .then((user) => {
             if (user) {
-                return res.status(400).send(req.body.Username + 'already exists');
+                return res.status(400).send(req.body.Username + ' already exists');
             } else {
                 Users
                     .create({
                         Username: req.body.Username,
-                        Password: req.body.Password,
+                        Password: hashedPassword,
                         Email: req.body.Email,
                         Birthday: req.body.Birthday
                     })
@@ -65,7 +91,7 @@ app.post('/users', (req, res) => {
                     .catch((error) => {
                         console.error(error);
                         res.status(500).send('Error: ' + error);
-                    })
+                    });
             }
         })
         .catch((error) => {
@@ -158,6 +184,6 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
-app.listen(8080, () => {
-    console.log("console test on port 8080")
-})
+app.listen(port, '0.0.0.0', () => {
+    console.log('Listening on Port ' + port);
+});
