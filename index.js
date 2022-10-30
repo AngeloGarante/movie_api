@@ -4,7 +4,8 @@ const express = require("express");
 const morgan = require("morgan");
 const Movies = Models.Movie;
 const Users = Models.User;
-mongoose.connect('mongodb://localhost:27017/myFLixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb://localhost:27017/myFLixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const app = express();
 const bodyParser = require('body-parser'),
     uuid = require("uuid");
@@ -22,7 +23,8 @@ const bcrypt = require("bcrypt");
 const { check, validationResult } = require('express-validator');
 //allowed Origins
 let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
+
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
