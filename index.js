@@ -22,7 +22,7 @@ let transAuth = passport.authenticate('jwt', { session: false });
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require('express-validator');
 //allowed Origins
-let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost:8080', 'https://myflix-angelo.herokuapp.com/'];
 const port = process.env.PORT || 8081;
 
 app.use(cors({
