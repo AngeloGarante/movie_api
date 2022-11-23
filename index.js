@@ -22,10 +22,12 @@ let transAuth = passport.authenticate('jwt', { session: false });
 const bcrypt = require("bcrypt");
 const { check, validationResult } = require('express-validator');
 //allowed Origins
-let allowedOrigins = ['http://localhost:1234', 'https://myflix-angelo.herokuapp.com/', '*'];
+let allowedOrigins = ['http://localhost:1234/', 'https://myflix-angelo.herokuapp.com/', '*'];
 const port = process.env.PORT || 8081;
 
-app.use(cors({
+app.use(cors());
+
+/*app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) === -1) {
@@ -34,7 +36,7 @@ app.use(cors({
         }
         return callback(null, true);
     }
-}));
+}));*/
 //Home page
 app.get("/", (req, res) => {
     res.send("Please visit, URL//public/documentation.html");
