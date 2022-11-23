@@ -37,7 +37,7 @@ app.use(cors({
 }));
 //Home page
 app.get("/", (req, res) => {
-    res.send("Please visit URL//public/documentation.html");
+    res.send("Please visit, URL//public/documentation.html");
 });
 // return list of movies
 app.get("/movies", transAuth, (req, res) => {
