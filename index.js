@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const Movies = Models.Movie;
 const Users = Models.User;
 //mongoose.connect('mongodb://localhost:27017/myFLixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI.toString, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const app = express();
 const bodyParser = require('body-parser'),
     uuid = require("uuid");
