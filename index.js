@@ -4,17 +4,20 @@ const express = require("express");
 const morgan = require("morgan");
 const Movies = Models.Movie;
 const Users = Models.User;
+const cors = require("cors");
 //mongoose.connect('mongodb://localhost:27017/myFLixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect("mongodb+srv://AngeloGarnet:AngeloGarnet1991!@myflixdb.9iefaje.mongodb.net/myFlixDB?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 const app = express();
 const bodyParser = require('body-parser'),
     uuid = require("uuid");
 const { toString } = require("lodash");
 const { json } = require("body-parser");
 methodOverride = require('method-override');
+app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan("common"));
-const cors = require("cors");
+
+
 let auth = require('./auth')(app);
 const passport = require('passport');
 require('./passport');
@@ -23,9 +26,9 @@ const bcrypt = require("bcrypt");
 const { check, validationResult } = require('express-validator');
 //allowed Origins
 let allowedOrigins = ['http://localhost:1234/', 'https://myflix-angelo.herokuapp.com/', '*'];
-const port = process.env.PORT || 8081;
+const PORT = process.env.PORT || 8081;
 
-app.use(cors());
+
 
 /*app.use(cors({
     origin: (origin, callback) => {
@@ -189,5 +192,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log('Listening on Port ' + port);
+    console.log('Listening on Port ' + PORT);
 });
