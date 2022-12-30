@@ -70,6 +70,17 @@ app.get("/movies/directed/:directed", transAuth, (req, res) => {
     })
 }
 )
+app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+    //app.get("/users", function (req, res) {
+    Users.find()
+        .then((users) => {
+            res.status(200).json(users);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).send('Error: ' + err);
+        });
+});
 // create new user
 app.post('/users', [
     check("Username", "Username is required").isLength({ min: 5 }),
