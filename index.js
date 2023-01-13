@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
     res.send("Please visit, URL//public/documentation.html");
 });
 // return list of movies
-app.get("/movies", transAuth, (req, res) => {
+app.get("/movies", (req, res) => {
     Movies.find().then((movies) => res.status(201).json(movies)).catch((err) => { console.error(err); res.status(500).send("Error " + err) })
 });
 // return data by title
