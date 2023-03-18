@@ -70,6 +70,15 @@ app.get("/movies/directed/:directed", transAuth, (req, res) => {
     })
 }
 )
+app.get('/users/:Username', transAuth, (req, res) => {
+    Users.findOne({ Username: req.params.Username }).then((user) => {
+        res.status(200).json(user)
+    })
+        .catch((err) => {
+            console.log(err)
+            res.status(500).send("Error" + err)
+        })
+})
 app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
     //app.get("/users", function (req, res) {
     Users.find()
