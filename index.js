@@ -79,7 +79,7 @@ app.get('/users/:Username', transAuth, (req, res) => {
             res.status(500).send("Error" + err)
         })
 })
-app.get('/users', (req, res) => {
+app.get('/users',transAuth, (req, res) => {
     //app.get("/users", function (req, res) {
     Users.find()
         .then((users) => {
