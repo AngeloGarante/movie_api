@@ -79,7 +79,7 @@ app.get('/users/:Username', transAuth, (req, res) => {
             res.status(500).send("Error" + err)
         })
 })
-app.get('/users', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/users', (req, res) => {
     //app.get("/users", function (req, res) {
     Users.find()
         .then((users) => {
