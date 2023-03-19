@@ -71,7 +71,7 @@ app.get("/movies/directed/:directed", transAuth, (req, res) => {
 }
 )
 app.get('/users/:Username', transAuth, (req, res) => {
-    Users.find({ Username: req.params.Username }).then((user) => {
+    Users.findOne({ Username: { $all: req.params.Username } }).then((user) => {
         res.status(200).json(user)
     })
         .catch((err) => {
@@ -79,7 +79,7 @@ app.get('/users/:Username', transAuth, (req, res) => {
             res.status(500).send("Error" + err)
         })
 })
-app.get('/users',transAuth, (req, res) => {
+app.get('/users', transAuth, (req, res) => {
     //app.get("/users", function (req, res) {
     Users.find()
         .then((users) => {
